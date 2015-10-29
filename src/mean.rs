@@ -4,7 +4,7 @@
  * average - a warmup exercise for PS1 from CSC4414 from University of Virginia
  * file: mean.rs
  *
- * This is free and unencumbered software released into the public domain.   
+ * This is free and unencumbered software released into the public domain.
  */
 
 /// Calculates the mean of a vector of uints as a float
@@ -19,7 +19,7 @@ pub fn mean(numbers: Vec<u32>) -> Option<f64> {
     let mut average = 0f64;
     let mut count = 0u32;
     for n in numbers.iter() {
-        average += (*n as f64);
+        average += *n as f64;
         count += 1;
     }
     Some((average as f64)/(count as f64))
