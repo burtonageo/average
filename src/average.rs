@@ -4,19 +4,17 @@
  * average - a warmup exercise for PS1 from CSC4414 from University of Virginia
  * file: main.rs
  *
- * This is free and unencumbered software released into the public domain.   
+ * This is free and unencumbered software released into the public domain.
  */
 
-#![crate_id = "average"]
-
-use std::os;
+use std::env::{args, Args};
 
 mod mean;
 
 /// Simple CLI app to calculate the mean of numerical arguments passed to
 /// it via the command line.
 fn main() {
-    let args = os::args();
+    let args = args();
     let (nums, bad_args) = parse_args(args);
 
     for bad_arg in bad_args.iter() {
@@ -34,21 +32,22 @@ fn main() {
 /// Returns a tuple of two lists; the first contains all of the numbers found
 /// in the parameter vector, and the second contains all of the strings which
 /// could not be parsed.
-fn parse_args<'a, 'b>(args: &'a Vec<&str>) -> (&'a Vec<u32>, &'a Vec<&'b str>) {
+fn parse_args(args: Args) -> (Vec<u32>, Vec<String>) {
     // We go to the trouble of storing the bad arguments rather than discarding them
     // (and printing out 'Bad Input') so that unit testing this function does not
     // clutter our console with unnecessary messages, and so we know we're getting
     // the bad data (rather than throwing it to the wind and thus printing nothing).
     // Slightly inefficient, but convenient.
 
-    let mut nums: Vec<u32>;
-    let mut bad_args: Vec<&str>;
+    let mut nums = vec![];
+    let mut bad_args = vec![];
 
-    for arg in args.iter().skip(1) {
-        let n_opt: Option<u32> = from_str(*arg);
+    for arg in args.skip(1) {
+        use std::str::FromStr;
+        let n_opt = FromStr::from_str(&arg[..]);
         match n_opt {
-            Some(n) => nums.push(n),
-            None    => bad_args.push(arg.to_owned())
+            Ok(n)  => nums.push(n),
+            Err(_) => bad_args.push(arg)
         };
     }
     return (nums, bad_args);
