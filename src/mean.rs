@@ -31,19 +31,19 @@ mod test {
 
     #[test]
     fn average_test_good_input_1() {
-        let test_vector = [1, 2, 3, 4, 5];
+        let test_vector = vec![1, 2, 3, 4, 5];
         assert_eq!(mean(test_vector), Some(3.0));
     }
 
     #[test]
     fn average_test_good_input_2() {
-        let test_vector = [12, 23, 34, 45, 56];
+        let test_vector = vec![12, 23, 34, 45, 56];
         assert_eq!(mean(test_vector), Some(34.0));
     }
 
     #[test]
     fn average_test_empty_input() {
-        let test_vector = [];
+        let test_vector = vec![];
         assert_eq!(mean(test_vector), None);
     }
 }

@@ -7,14 +7,14 @@
  * This is free and unencumbered software released into the public domain.
  */
 
-use std::env::{args, Args};
+use std::env::args;
 
 mod mean;
 
 /// Simple CLI app to calculate the mean of numerical arguments passed to
 /// it via the command line.
 fn main() {
-    let args = args();
+    let args = args().collect::<Vec<_>>();
     let (nums, bad_args) = parse_args(args);
 
     for bad_arg in bad_args.iter() {
@@ -32,7 +32,7 @@ fn main() {
 /// Returns a tuple of two lists; the first contains all of the numbers found
 /// in the parameter vector, and the second contains all of the strings which
 /// could not be parsed.
-fn parse_args(args: Args) -> (Vec<u32>, Vec<String>) {
+fn parse_args(args: Vec<String>) -> (Vec<u32>, Vec<String>) {
     // We go to the trouble of storing the bad arguments rather than discarding them
     // (and printing out 'Bad Input') so that unit testing this function does not
     // clutter our console with unnecessary messages, and so we know we're getting
@@ -42,7 +42,7 @@ fn parse_args(args: Args) -> (Vec<u32>, Vec<String>) {
     let mut nums = vec![];
     let mut bad_args = vec![];
 
-    for arg in args.skip(1) {
+    for arg in args.into_iter().skip(1) {
         use std::str::FromStr;
         let n_opt = FromStr::from_str(&arg[..]);
         match n_opt {
@@ -59,29 +59,29 @@ mod test {
 
     #[test]
     fn test_parse_args_empty_vec() {
-        let test_vec = [PROGM_NAME.to_owned()];
-        assert_eq!(super::parse_args(test_vec), ([], []));
+        let test_vec = vec![PROGM_NAME.into()];
+        assert_eq!(super::parse_args(test_vec), (vec![], vec![]));
     }
 
     #[test]
     fn test_parse_args_vec_with_numbers() {
-        let test_vec = [PROGM_NAME.to_owned(), "1", "2", "3"];
-        assert_eq!(super::parse_args(test_vec), ([1, 2, 3], []));
+        let test_vec = vec![PROGM_NAME.into(), "1".into(), "2".into(), "3".into()];
+        assert_eq!(super::parse_args(test_vec), (vec![1, 2, 3], vec![]));
     }
 
     #[test]
     fn test_parse_args_vec_with_all_strings() {
-        let test_vec = [PROGM_NAME.to_owned(), "Hello", "Judy", "How", "Are", "You"];
+        let test_vec = vec![PROGM_NAME.into(), "Hello".into(), "Judy".into(), "How".into(), "Are".into(), "You".into()];
         assert_eq!(
             super::parse_args(test_vec),
-            ([], ["Hello", "Judy", "How", "Are", "You"]));
+            (vec![], vec!["Hello".into(), "Judy".into(), "How".into(), "Are".into(), "You".into()]));
     }
 
     #[test]
     fn test_parse_args_vec_with_mixed() {
-        let test_vec = [PROGM_NAME.to_owned(), "Pears: ", "1", "Apples: ", "23"];
+        let test_vec = vec![PROGM_NAME.into(), "Pears: ".into(), "1".into(), "Apples: ".into(), "23".into()];
         assert_eq!(
             super::parse_args(test_vec),
-            ([1, 23], ["Pears: ", "Apples: "]));
+            (vec![1, 23], vec!["Pears: ".into(), "Apples: ".into()]));
     }
 }
