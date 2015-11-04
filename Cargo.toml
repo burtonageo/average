@@ -3,7 +3,3 @@
 name = "average"
 version = "0.1.0"
 authors = ["burtonageo@gmail.com"]
-
-[[bin]]
-
-name = "average"
